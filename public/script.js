@@ -17,6 +17,7 @@ document.getElementById('testForm').addEventListener('submit', e => {
   fetch(`/api/stock-prices?stock=${stock1}&stock=${stock2}&like=${checkbox}`)
     .then(res => res.json())
     .then(data => {
+      console.log("data on the frontend: ", data);
       document.getElementById('jsonResult').innerText = JSON.stringify(data);
     });
 });

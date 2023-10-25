@@ -7,9 +7,27 @@ const cors        = require('cors');
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
-
+const helmet            = require('helmet');
 const app = express();
 
+app.use(helmet.hidePoweredBy());
+app.use(helmet({
+  frameguard: {
+    action: 'deny'
+  },
+  hists: {
+    maxAge: 90 *24 * 360,
+    force: true
+  },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self"],
+      styleSrc: ["'self'" ,'/public'],
+      scriptSrc: ["'self'", '/public'],
+    }
+  },
+  dnsPrefetchControl: false,
+}))
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
@@ -28,7 +46,7 @@ fccTestingRoutes(app);
 
 //Routing for API 
 apiRoutes(app);  
-    
+
 //404 Not Found Middleware
 app.use(function(req, res, next) {
   res.status(404)
